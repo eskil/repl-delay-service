@@ -1,9 +1,8 @@
 %% @author Eskil Olsen <eskil@uber.com>
 
--module(repl_delay_server).
+-module(repl_delay_core_server).
 -behaviour(gen_server).
 -define(SERVER, ?MODULE).
--include_lib("repl_delay.hrl").
 
 %% ------------------------------------------------------------------
 %% API Function Exports
@@ -35,7 +34,7 @@ get_replication_delays() ->
 
 init(Args) ->
     ets:new(slaves, [set, public, named_table]),
-    watch_postgres_slaves(repl_delay_config:slaves()),
+    watch_postgres_slaves(repl_delay_core_config:slaves()),
     {ok, Args}.
 
 handle_call({get_replication_delay}, _From, State) ->

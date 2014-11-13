@@ -1,6 +1,6 @@
 %% @author Eskil Olsen <eskil@uber.com>
 
--module(repl_delay_sup).
+-module(repl_delay_core_sup).
 
 -behaviour(supervisor).
 
@@ -25,6 +25,6 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    Server = ?CHILD(repl_delay_server, worker),
+    Server = ?CHILD(repl_delay_core_server, worker),
     Workers = [Server],
     {ok, { {one_for_one, 5, 10}, Workers} }.

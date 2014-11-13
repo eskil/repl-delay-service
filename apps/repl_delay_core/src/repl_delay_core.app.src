@@ -1,4 +1,6 @@
-{application, repl_delay,
+%% @author Eskil Olsen <eskil@uber.com>
+
+{application, repl_delay_core,
  [
   {description, "Get postgres replication delay"},
   {vsn, "1"},
@@ -7,6 +9,6 @@
                   kernel,
                   stdlib
                  ]},
-  {mod, { repl_delay_app, []}},
+  {mod, { repl_delay_core_app, []}},
   {env, []}
  ]}.

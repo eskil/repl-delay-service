@@ -1,6 +1,6 @@
 %% @author Eskil Olsen <eskil@uber.com>
 
--module(repl_delay_app).
+-module(repl_delay_core_app).
 
 -behaviour(application).
 
@@ -12,7 +12,7 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
-    repl_delay_sup:start_link().
+    repl_delay_core_sup:start_link().
 
 stop(_State) ->
     ok.
