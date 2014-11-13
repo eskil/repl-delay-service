@@ -1,7 +1,7 @@
 /ebin
 /deps
 /doc
-/rel
+/rel/repl_delay_service
 /_test
 /.eunit
 /docs
