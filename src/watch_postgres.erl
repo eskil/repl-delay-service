@@ -1,8 +1,7 @@
 %% @author Eskil Olsen <eskil@uber.com>
 
 -module(watch_postgres).
--include_lib("repl_delay.hrl").
--export([start_link/2, init/2, cancel/1]).
+-export([start_link/2, init/2]).
 -record(state, {server, slave, pg_conn}).
 
 as_proplist(Columns, Rows) ->
@@ -18,24 +17,10 @@ loop(S = #state{server=Server, slave=Slave, pg_conn=PgConn}) ->
 					       "SELECT hostname AS master, EXTRACT(EPOCH FROM NOW() - pg_time) AS delay FROM heartbeat;"),
 	    Result = as_proplist(Columns, Rows),
 	    ets:insert(slaves, {Slave, Result}),
-	    ets:foldl(fun(A, Acc) -> io:format("~p~n", [A]), Acc end, 0, slaves),
+	    % ets:foldl(fun(A, Acc) -> io:format("~p~n", [A]), Acc end, 0, slaves),
 	    loop(S)
     end.
 
-cancel(Pid) ->
-        %% Monitor in case the process is already dead.
-    Ref = erlang:monitor(process, Pid),
-    Pid ! {self(), Ref, cancel},
-        receive
-        {Ref, ok} ->
-
-		erlang:demonitor(Ref, [flush]),
-		ok;
-	            {'DOWN', Ref, process, Pid, _Reason} ->
-            ok
-    end.
-
-%
 start_link(Server, Slave) ->
     spawn_link(?MODULE, init, [Server, Slave]).
 
