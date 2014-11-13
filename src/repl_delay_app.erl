@@ -1,3 +1,5 @@
+%% @author Eskil Olsen <eskil@uber.com>
+
 -module(repl_delay_app).
 
 -behaviour(application).
