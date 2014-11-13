@@ -1,0 +1,12 @@
+{application, repl_delay,
+ [
+  {description, "Get postgres replication delay"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { repl_delay_app, []}},
+  {env, []}
+ ]}.
