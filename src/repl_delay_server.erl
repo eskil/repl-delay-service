@@ -30,7 +30,7 @@ start_link() ->
 %% ------------------------------------------------------------------
 
 init(Args) ->
-    ets:new(slaves, [set, named_table]),
+    ets:new(slaves, [set, public, named_table]),
     watch_postgres_slaves(repl_delay_config:slaves()),
     {ok, Args}.
 
@@ -54,7 +54,7 @@ code_change(_OldVsn, State, _Extra) ->
 %% ------------------------------------------------------------------
 
 watch_postgres_slaves([Slave|T]) ->
-    watch_postgres:start_link(Slave),
+    watch_postgres:start_link(self(), Slave),
     watch_postgres_slaves(T);
 watch_postgres_slaves([]) ->
     ok.

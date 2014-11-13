@@ -6,6 +6,7 @@
 slaves() ->
     % [ [ {host, ...}, ... ] ]
     [
-     [{host, "10.31.3.144"}],
-     [{host, "10.31.7.140"}]
+     [{host, "localhost"}, {port, 5432}],
+     [{host, "localhost"}, {port, 5432}],
+     [{host, "localhost"}, {port, 5432}]
     ].

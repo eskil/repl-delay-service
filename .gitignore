@@ -1,6 +1,7 @@
 /ebin
 /deps
 /doc
+/rel
 /_test
 /.eunit
 /docs
