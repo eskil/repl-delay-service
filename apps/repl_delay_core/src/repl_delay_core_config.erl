@@ -17,6 +17,5 @@ slaves() ->
         [{host, "postgres19-peak1"}, {port, 6432}],
         [{host, "postgres20-peak1"}, {port, 6432}],
         [{host, "postgres02-sjc1"}, {port, 6432}],
-        [{host, "postgres16-peak1"}, {port, 6432}],
         [{host, "postgres21-peak1"}, {port, 6432}]
     ].
