@@ -18,8 +18,8 @@ allowed_methods(RD, Ctx) ->
 
 content_types_provided(RD, Ctx) ->
     {[
-      {"application/json", to_json},
-      {"text/html", to_html}
+      {"text/html", to_html},
+      {"application/json", to_json}
      ], RD, Ctx}.
 
 -spec to_json(wrq:reqdata(), term()) -> {iodata(), wrq:reqdata(), term()}.
@@ -29,21 +29,23 @@ to_json(RD, Ctx) ->
         [] ->
             {json_body(repl_delay_core_server:get_replication_delays()), RD, Ctx};
         [{id, "min"}] ->
-            {json_body(repl_delay_core_server:get_min_replication_delay()), RD, Ctx};
+            {json_body([repl_delay_core_server:get_min_replication_delay()]), RD, Ctx};
         [{id, "max"}] ->
-            {json_body(repl_delay_core_server:get_max_replication_delay()), RD, Ctx}
+            {json_body([repl_delay_core_server:get_max_replication_delay()]), RD, Ctx}
     end.
 
 -spec to_html(wrq:reqdata(), term()) -> {iodata(), wrq:reqdata(), term()}.
-to_html(ReqData, State) ->
-    PathInfo = wrq:path_info(ReqData),
+to_html(RD, Ctx) ->
+    PathInfo = wrq:path_info(RD),
     case PathInfo of
         [] ->
-            {"<html><body>I am repl delay service, I need erlydtl for body</body></html>", ReqData, State};
+            {json_body(repl_delay_core_server:get_replication_delays()), RD, Ctx};
         [{id, "min"}] ->
-            {"<html><body>I am repl delay service, I need erlydtl for min</body></html>", ReqData, State};
+	    {min, Val} = repl_delay_core_server:get_min_replication_delay(),
+	    {float_to_list(float(Val), [{decimals, 4}, compact]) ++ "\n", RD, Ctx};
         [{id, "max"}] ->
-            {"<html><body>I am repl delay service, I need erlydtl for maxg</body></html>", ReqData, State}
+	    {max, Val} = repl_delay_core_server:get_max_replication_delay(),
+	    {float_to_list(float(Val), [{decimals, 4}, compact]) ++ "\n", RD, Ctx}
     end.
 
 json_body(QS) ->

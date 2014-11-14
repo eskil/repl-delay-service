@@ -1,5 +1,5 @@
 ERL ?= erl
-REBAR := rebar
+REBAR ?= rebar
 
 .PHONY: deps
 

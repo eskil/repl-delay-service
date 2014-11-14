@@ -46,6 +46,7 @@ init(Args) ->
 
 handle_call({get_replication_delay}, _From, State) ->
     Result = ets:foldl(fun(A, Acc) -> [A|Acc] end, [], slaves),
+    % TODO: could add min/max here too.
     {reply, Result, State};
 
 handle_call({get_min_replication_delay}, _From, State) ->
@@ -58,7 +59,7 @@ handle_call({get_min_replication_delay}, _From, State) ->
             Acc
         end,
     Result = ets:foldl(MinDelayFun, 0, slaves),
-    {reply, [{min, Result}], State};
+    {reply, {min, Result}, State};
 
 handle_call({get_max_replication_delay}, _From, State) ->
     MaxDelayFun =
@@ -68,7 +69,7 @@ handle_call({get_max_replication_delay}, _From, State) ->
             Acc
         end,
     Result = ets:foldl(MaxDelayFun, 0, slaves),
-    {reply, [{max, Result}], State};
+    {reply, {max, Result}, State};
 
 handle_call(_Request, _From, State) ->
     {reply, ok, State}.
