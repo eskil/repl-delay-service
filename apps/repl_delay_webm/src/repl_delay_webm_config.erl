@@ -8,7 +8,8 @@
 -spec dispatch() -> [webmachine_dispatcher:route()].
 dispatch() ->
     lists:flatten([
-        {[], repl_delay_webm_resource, []}
+        {[], repl_delay_webm_resource, []},
+        {[id], repl_delay_webm_resource, []}
     ]).
 
 web_config() ->

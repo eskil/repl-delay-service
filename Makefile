@@ -29,10 +29,10 @@ webmachine: app
 		-s dispatch_webmachine
 
 all:
-	rebar get-deps
-	rebar compile
+	@$(REBAR) get-deps
+	@$(REBAR) compile
 
 release: all
-	cd rel && rebar generate
+	cd rel && $(REBAR) generate
 
 .PHONE: release all
