@@ -1,6 +1,6 @@
 %% @author Eskil Olsen <eskil@uber.com>
 
--module(watch_postgres).
+-module(watch_slave).
 -export([start_link/2, init/2]).
 -record(state, {server, slave, pg_conn}).
 
@@ -48,6 +48,7 @@ init(Server, Slave) ->
     [{host, Hostname}, {port, Port}] = Slave,
     User = "uber",
     Password = "uber",
-    Opts = [{database, "uber"}, {timeout, 1000}, {port, Port}],
-    {ok, C} = pgsql:connect(Hostname, User, Password, Opts),
-    loop(#state{server=Server, slave=Hostname, pg_conn=C}).
+    Database = "uber",
+    Opts = [{database, Database}, {timeout, 1000}, {port, Port}],
+    {ok, Conn} = pgsql:connect(Hostname, User, Password, Opts),
+    loop(#state{server=Server, slave=Hostname, pg_conn=Conn}).

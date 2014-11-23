@@ -4,7 +4,6 @@
 -export([slaves/0]).
 
 slaves() ->
-    % [ [ {host, ...}, ... ] ]
     [
         [{host, "postgres01-sjc1"}, {port, 6432}],
         [{host, "postgres03-sjc1"}, {port, 6432}],

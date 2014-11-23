@@ -41,34 +41,34 @@ get_max_replication_delay() ->
 
 init(Args) ->
     ets:new(slaves, [set, public, named_table]),
-    watch_postgres_slaves(repl_delay_core_config:slaves()),
+    watch_slaves(repl_delay_core_config:slaves()),
     {ok, Args}.
 
 handle_call({get_replication_delay}, _From, State) ->
     Result = ets:foldl(fun(A, Acc) -> [A|Acc] end, [], slaves),
-    % TODO: could add min/max here too.
     {reply, Result, State};
 
 handle_call({get_min_replication_delay}, _From, State) ->
-    MinDelayFun =
-        fun({_HostName, [[{master, _Master}, {delay, Delay}]]}, 0) ->
-            Delay;
-        ({_HostName, [[{master, _Master}, {delay, Delay}]]}, Acc) when Delay < Acc ->
-            Delay;
-        ({_HostName, [[{master, _Master}, {delay, _Delay}]]}, Acc) ->
+    MinTimestampFun =
+        fun({_HostName, [[{master, _Master}, {delay, Timestamp}]]}, 0) ->
+            Timestamp;
+        ({_HostName, [[{master, _Master}, {delay, Timestamp}]]}, Acc) when Timestamp < Acc ->
+            Timestamp;
+        ({_HostName, [[{master, _Master}, {delay, _Timestamp}]]}, Acc) ->
             Acc
         end,
-    Result = ets:foldl(MinDelayFun, 0, slaves),
+    Timestamp = ets:foldl(MinTimestampFun, 0, slaves),
+    Delay = unix_ts - Timestamp;
     {reply, {min, Result}, State};
 
 handle_call({get_max_replication_delay}, _From, State) ->
-    MaxDelayFun =
-        fun({_HostName, [[{master, _Master}, {delay, Delay}]]}, Acc) when Delay > Acc ->
-            Delay;
-        ({_HostName, [[{master, _Master}, {delay, _Delay}]]}, Acc) ->
+    MaxTimestampFun =
+        fun({_HostName, [[{master, _Master}, {delay, Timestamp}]]}, Acc) when Timestamp > Acc ->
+            Timestamp;
+        ({_HostName, [[{master, _Master}, {delay, _Timestamp}]]}, Acc) ->
             Acc
         end,
-    Result = ets:foldl(MaxDelayFun, 0, slaves),
+    Result = ets:foldl(MaxTimestampFun, 0, slaves),
     {reply, {max, Result}, State};
 
 handle_call(_Request, _From, State) ->
@@ -90,8 +90,13 @@ code_change(_OldVsn, State, _Extra) ->
 %% Internal Function Definitions
 %% ------------------------------------------------------------------
 
-watch_postgres_slaves([Slave|T]) ->
-    watch_postgres:start_link(self(), Slave),
-    watch_postgres_slaves(T);
-watch_postgres_slaves([]) ->
+unix_ts({MegaSecs, Secs, _MicroSecs}) -> 
+    MegaSecs*1000000 + Secs;
+unix_ts() -> 
+    unix_ts(now()).
+
+watch_slaves([Slave|T]) ->
+    watch_slave:start_link(self(), Slave),
+    watch_slaves(T);
+watch_slaves([]) ->
     ok.
