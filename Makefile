@@ -5,7 +5,7 @@ REBAR ?= rebar
 
 all: deps compile
 
-compile:
+compile: deps
 	@$(REBAR) compile
 
 app:
@@ -28,11 +28,7 @@ webmachine: app
 		-s dispatch_core \
 		-s dispatch_webmachine
 
-all:
-	@$(REBAR) get-deps
-	@$(REBAR) compile
-
-release: all
+all: deps compile
 	cd rel && $(REBAR) generate
 
-.PHONE: release all
+.PHONE: release all deps

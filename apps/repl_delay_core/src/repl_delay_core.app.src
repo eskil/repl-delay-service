@@ -1,4 +1,4 @@
-%% @author Eskil Olsen <eskil@uber.com>
+%% @author Eskil Olsen <eskil@eskil.org>
 
 {application, repl_delay_core,
  [
