@@ -74,6 +74,9 @@ Application that queries slaves and keeps replication front. The
 contains the server. This runs a process per database slave that
 writes the slave's info into shared erlang ETS store.
 
+Each type of database has it's own process loop defined in
+* [mysql](apps/repl_delay_core/src/watch_mysql.erl)
+* [postgres](apps/repl_delay_core/src/watch_postgres.erl)
 
 ### [apps/repl_delay_webm](apps/repl_delay_webm)
 
