@@ -36,7 +36,7 @@ curl localhost:8080/foo/max
 
 
 Config is currently a hardcoded list of servers in
-[apps/repl_delay_core/src/repl_delay_core_config.erl](apps/repl_delay_core/src/repl_delay_core_config.erl).
+[repl_delay_core_config.erl](apps/repl_delay_core/src/repl_delay_core_config.erl).
 
 ```
 slave_clusters() ->
@@ -70,7 +70,7 @@ slave_clusters() ->
 ### apps/repl_delay_core
 
 Application that queries slaves and keeps replication front. The
-[apps/repl_delay_core/src/repl_delay_core_server.erl](apps/repl_delay_core/src/repl_delay_core_server.erl)
+[repl_delay_core_server.erl](apps/repl_delay_core/src/repl_delay_core_server.erl)
 contains the server. This runs a process per database slave that
 writes the slave's info into shared erlang ETS store.
 
@@ -78,9 +78,9 @@ writes the slave's info into shared erlang ETS store.
 ### apps/repl_delay_webm
 
 Basho webmachine frontend. The resource endpoint is defined in
-[apps/repl_delay_webm/src/repl_delay_webm_resource.erl](apps/repl_delay_webm/src/repl_delay_webm_resource.erl)
+[repl_delay_webm_resource.erl](apps/repl_delay_webm/src/repl_delay_webm_resource.erl)
 and routing in
-[apps/repl_delay_webm/src/repl_delay_webm_config.erl](apps/repl_delay_webm/src/repl_delay_webm_config.erl). On
+[repl_delay_webm_config.erl](apps/repl_delay_webm/src/repl_delay_webm_config.erl). On
 requests, it sends a synchronous call to `repl_delay_core_server` for
 the info.
 
