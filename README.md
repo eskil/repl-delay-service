@@ -10,6 +10,8 @@ the value from the clock will be a good estimate of the slave's delay.
 This assumes that the clock on the master and slaves are synchronised
 to within your own tolerance.
 
+Mostly written as a demonstration of erlang.
+
 ## Build
 
 To build, you'll need `rebar` in your path.
@@ -68,15 +70,19 @@ slave_clusters() ->
 ### apps/repl_delay_core
 
 Application that queries slaves and keeps replication front. The
-[apps/repl_delay_core/src/repl_delay_core_server.erl](apps/repl_delay_core/src/repl_delay_core_server.erl) contains the
-server.
+[apps/repl_delay_core/src/repl_delay_core_server.erl](apps/repl_delay_core/src/repl_delay_core_server.erl)
+contains the server. This runs a process per database slave that
+writes the slave's info into shared erlang ETS store.
 
 
 ### apps/repl_delay_webm
 
 Basho webmachine frontend. The resource endpoint is defined in
-[apps/repl_delay_webm/src/repl_delay_webm_resource.erl](apps/repl_delay_webm/src/repl_delay_webm_resource.erl) and routing in
-[apps/repl_delay_webm/src/repl_delay_webm_config.erl](apps/repl_delay_webm/src/repl_delay_webm_config.erl).
+[apps/repl_delay_webm/src/repl_delay_webm_resource.erl](apps/repl_delay_webm/src/repl_delay_webm_resource.erl)
+and routing in
+[apps/repl_delay_webm/src/repl_delay_webm_config.erl](apps/repl_delay_webm/src/repl_delay_webm_config.erl). On
+requests, it sends a synchronous call to `repl_delay_core_server` for
+the info.
 
 
 ## Todo
