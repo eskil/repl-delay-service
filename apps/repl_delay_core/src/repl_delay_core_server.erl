@@ -112,6 +112,9 @@ float_ts() ->
 watch_slave_cluster(postgres, Cluster, Settings, [Slave|Slaves]) ->
     watch_postgres:start_link(self(), Cluster, Settings, Slave),
     watch_slave_cluster(postgres, Cluster, Settings, Slaves);
+watch_slave_cluster(mysql, Cluster, Settings, [Slave|Slaves]) ->
+    watch_mysql:start_link(self(), Cluster, Settings, Slave),
+    watch_slave_cluster(mysql, Cluster, Settings, Slaves);
 watch_slave_cluster(_Type, _Cluster, _Settings, []) ->
     ok.
 
