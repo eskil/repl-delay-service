@@ -75,7 +75,7 @@ contains the server. This runs a process per database slave that
 writes the slave's info into shared erlang ETS store.
 
 
-### [apps/repl_delay_webm]9apps/repl_delay_webm)
+### [apps/repl_delay_webm](apps/repl_delay_webm)
 
 Basho webmachine frontend. The resource endpoint is defined in
 [repl_delay_webm_resource.erl](apps/repl_delay_webm/src/repl_delay_webm_resource.erl)
