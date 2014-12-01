@@ -12,7 +12,7 @@ to within your own tolerance.
 
 Mostly written as a demonstration of erlang.
 
-## Build
+### Build
 
 To build, you'll need `rebar` in your path.
 
@@ -32,7 +32,7 @@ curl localhost:8080/foo/max
 ./rel/repl_delay_service/bin/repl_delay_service stop
 ```
 
-## Configuration
+### Configuration
 
 
 Config is currently a hardcoded list of servers in
@@ -64,10 +64,10 @@ slave_clusters() ->
 ```
 
 
-## Layout
+### Layout
 
 
-### [apps/repl_delay_core](apps/repl_delay_core)
+#### [apps/repl_delay_core](apps/repl_delay_core)
 
 Application that queries slaves and keeps replication front. The
 [repl_delay_core_server.erl](apps/repl_delay_core/src/repl_delay_core_server.erl)
@@ -75,10 +75,10 @@ contains the server. This runs a process per database slave that
 writes the slave's info into shared erlang ETS store.
 
 Each type of database has it's own process loop defined in
-* [mysql](apps/repl_delay_core/src/watch_mysql.erl)
-* [postgres](apps/repl_delay_core/src/watch_postgres.erl)
+* [watch_mysql.erl](apps/repl_delay_core/src/watch_mysql.erl)
+* [watch_postgres.erl](apps/repl_delay_core/src/watch_postgres.erl)
 
-### [apps/repl_delay_webm](apps/repl_delay_webm)
+#### [apps/repl_delay_webm](apps/repl_delay_webm)
 
 Basho webmachine frontend. The resource endpoint is defined in
 [repl_delay_webm_resource.erl](apps/repl_delay_webm/src/repl_delay_webm_resource.erl)
@@ -88,7 +88,8 @@ requests, it sends a synchronous call to `repl_delay_core_server` for
 the info.
 
 
-## Todo
+### Todo
 
 * Makes more sense to return the name of the least delayed slave in /min.
 * Finish mysql support.
+# Rewrite in elixir to try it.
