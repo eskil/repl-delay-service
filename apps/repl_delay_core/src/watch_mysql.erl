@@ -14,6 +14,12 @@ loop(S = #state{server=Server, cluster=Cluster, slave=Slave}) ->
 	    loop(S)
     end.
 
+mysql_log(_File, _Line, Level, FmtArgsFun) ->
+    % Don't log queries.
+    %% {Fmt, Args} = FmtArgsFun(),
+    %% lager:info(Fmt, Args),
+    ok.
+
 start_link(Server, Cluster, Settings, Slave) ->
     spawn_link(?MODULE, init, [Server, Cluster, Settings, Slave]).
 
@@ -23,4 +29,5 @@ init(Server, Cluster, Settings, Slave) ->
     User = proplists:get_value(user, Settings),
     Password = proplists:get_value(password, Settings),
     Database = proplists:get_value(database, Settings),
+    mysql:start_link(pool, Host, Port, User, Password, Database, mysql_log/4, utf8)
     loop(#state{server=Server, cluster=Cluster, slave=Hostname}).

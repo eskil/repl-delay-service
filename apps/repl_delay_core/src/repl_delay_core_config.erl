@@ -34,8 +34,8 @@ slave_clusters() ->
        {settings,
 	[
 	 {user, "mysql_user"},
-	 {password, ""},
-	 {database, "tuber"}
+	 {password, "mysql_password"},
+	 {database, "mysql_db"}
 	]
        },
        {slaves,
@@ -45,6 +45,5 @@ slave_clusters() ->
         ]
        }
       ]
-
      }
     ].

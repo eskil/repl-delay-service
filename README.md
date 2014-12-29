@@ -12,12 +12,13 @@ to within your own tolerance.
 
 Mostly written as a demonstration of erlang.
 
+
 ### Build
 
 To build, you'll need `rebar` in your path.
 
 ```
-make make
+make
 ./rel/repl_delay_service/bin/repl_delay_service start
 ./rel/repl_delay_service/bin/repl_delay_service console
 
@@ -33,8 +34,8 @@ curl localhost:8080/foo/max
 ./rel/repl_delay_service/bin/repl_delay_service stop
 ```
 
-### Configuration
 
+### Configuration
 
 Config is currently a hardcoded list of servers in
 [repl_delay_core_config.erl](apps/repl_delay_core/src/repl_delay_core_config.erl).
@@ -44,7 +45,7 @@ slave_clusters() ->
   [
     {cluster,
       [
-        {name, "foo"},
+        {name, "main"},
         {type, postgres},
         {settings,
           [
@@ -55,18 +56,65 @@ slave_clusters() ->
         },
         {slaves,
           [
-            [{host, "dbslave1"}, {port, 6432}],
-            [{host, "dbslave2"}, {port, 6432}]
+            [{host, "pgslave1"}, {port, 6432}],
+            [{host, "pgslave2"}, {port, 6432}]
+          ]
+        }
+      ]
+    },
+    {cluster,
+      [
+        {name, "services"},
+        {type, mysql},
+        {settings,
+          [
+            {user, "user"},
+            {password, "password"},
+            {database, "database"}
+          ]
+        },
+        {slaves,
+          [
+            [{host, "mysqlslave1"}, {port, 3306}],
+            [{host, "mysqlslave2"}, {port, 3306}]
           ]
         }
       ]
     }
+
   ].
 ```
 
 
-### Layout
 
+### Heartbeat table
+
+#### mysql
+
+```
+CREATE TABLE `heartbeat` (
+  `ts` varchar(26) NOT NULL,
+  `server_id` int(10) unsigned NOT NULL,
+  `file` varchar(255) DEFAULT NULL,
+  `position` bigint(20) unsigned DEFAULT NULL,
+  `relay_master_log_file` varchar(255) DEFAULT NULL,
+  `exec_master_log_pos` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`server_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+```
+
+### postgres
+
+```
+CREATE TABLE heartbeat (
+    hostname character varying(128),
+    pg_time timestamp without time zone,
+    sys_time timestamp without time zone
+);
+```
+
+
+### Layout
 
 #### [apps/repl_delay_core](apps/repl_delay_core)
 
