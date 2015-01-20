@@ -3,6 +3,7 @@
 -module(repl_delay_core_server).
 -behaviour(gen_server).
 -define(SERVER, ?MODULE).
+-include("slave_record.hrl").
 
 %% ------------------------------------------------------------------
 %% API Function Exports
@@ -45,6 +46,7 @@ exists(Cluster) ->
 %% ------------------------------------------------------------------
 
 init(Args) ->
+    init_tables(),
     watch_slave_clusters(repl_delay_core_config:slave_clusters()),
     {ok, Args}.
 
@@ -95,6 +97,7 @@ handle_info(_Info, State) ->
     {noreply, State}.
 
 terminate(_Reason, _State) ->
+    mnesia:stop(),
     ok.
 
 code_change(_OldVsn, State, _Extra) ->
@@ -129,3 +132,16 @@ watch_slave_clusters([{cluster, Properties}|T]) ->
     watch_slave_clusters(T);
 watch_slave_clusters([]) ->
     ok.
+
+init_tables() ->
+    Nodes = [node()],
+    ok = mnesia:start(),
+    mnesia:create_schema(Nodes),
+    mnesia:delete_table(slaves),
+    {atomic, ok} = mnesia:create_table(slaves,
+				       [
+					{attributes, record_info(fields, slave_record)},
+					% name is the first field, thus always indexed.
+					{index, [#slave_record.cluster]},
+					{ram_copies, Nodes}
+				       ]).

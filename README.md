@@ -1,7 +1,7 @@
 # repl-delay-service
 
 
-Service to report database slaves' replication delay. 
+Service to report database slaves' replication delay.
 
 You'll need a process on the master that regularly (eg. every 1s)
 writes a timestamp to a `heartbeat` table. On the slaves, the delta in
@@ -19,6 +19,7 @@ To build, you'll need `rebar` in your path.
 ```
 make make
 ./rel/repl_delay_service/bin/repl_delay_service start
+./rel/repl_delay_service/bin/repl_delay_service console
 
 # Get the entire 'foo' cluster info
 curl localhost:8080/foo
@@ -92,4 +93,5 @@ the info.
 
 * Makes more sense to return the name of the least delayed slave in /min.
 * Finish mysql support.
-# Rewrite in elixir to try it.
+*
+* Rewrite in elixir to try it because it looks awesome.

@@ -11,10 +11,6 @@ loop(S = #state{server=Server, cluster=Cluster, slave=Slave}) ->
         {Server, Ref, cancel} ->
             Server ! {Ref, ok}
     after 1000 ->
-	    {ok, Columns, Rows} = pgsql:squery(PgConn,
-                "SELECT hostname AS master, EXTRACT(EPOCH FROM NOW() - pg_time) AS delay FROM heartbeat;"),
-	    Result = as_proplist(Columns, Rows),
-	    ets:insert(list_to_atom("slaves." ++ Cluster), {Slave, float_ts(), Result}),
 	    loop(S)
     end.
 
