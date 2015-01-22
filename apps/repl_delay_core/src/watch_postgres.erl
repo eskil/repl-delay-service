@@ -45,10 +45,6 @@ loop(S = #state{server=Server, cluster=Cluster, slave=Slave, pg_conn=PgConn}) ->
 	    {ok, Columns, Rows} = pgsql:squery(PgConn,
                 "SELECT hostname AS master, EXTRACT(EPOCH FROM NOW() - pg_time) AS delay FROM heartbeat;"),
 	    Result = as_proplist(Columns, Rows),
-	    F = fun() ->
-	        mnesia:write(#slave_record{cluster=Cluster, name=Slave, ts=float_ts(), delay=Result})
-	    end,
-	    mnesia:activity(transaction, F),
 	    ets:insert(list_to_atom("slaves." ++ Cluster), {Slave, float_ts(), Result}),
 	    loop(S)
     end.
