@@ -29,5 +29,5 @@ init(Server, Cluster, Settings, Slave) ->
     User = proplists:get_value(user, Settings),
     Password = proplists:get_value(password, Settings),
     Database = proplists:get_value(database, Settings),
-    mysql:start_link(pool, Hostname, Port, User, Password, Database, mysql_log/4, utf8),
+    mysql:start_link(pool, Hostname, Port, User, Password, Database, fun mysql_log/4, utf8),
     loop(#state{server=Server, cluster=Cluster, slave=Hostname}).

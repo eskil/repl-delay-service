@@ -5,6 +5,7 @@
 -define(SERVER, ?MODULE).
 -include("slave_record.hrl").
 
+
 %% ------------------------------------------------------------------
 %% API Function Exports
 %% ------------------------------------------------------------------
@@ -142,6 +143,6 @@ init_tables() ->
 				       [
 					{attributes, record_info(fields, slave_record)},
 					% name is the first field, thus always indexed.
-					{index, [#slave_record.cluster]},
+					{index, [#slave_record.name]},
 					{ram_copies, Nodes}
 				       ]).

@@ -28,11 +28,16 @@ content_types_provided(RD, Ctx) ->
 resource_exists(RD, Ctx) ->
     PathInfo = wrq:path_info(RD),
     Cluster = proplists:get_value(cluster, PathInfo),
-    case repl_delay_core_server:exists(Cluster) of
-	ok ->
-	    {true, RD, Ctx};
-	_ ->
-	    {false, RD, Ctx}
+    case Cluster of
+        undefined ->
+            {false, wrq:set_resp_header("X-Message", "Missing cluster", RD), Ctx};
+    _ ->
+        case repl_delay_core_server:exists(Cluster) of
+	    ok ->
+		{true, RD, Ctx};
+	    _ ->
+		{false, wrq:set_resp_header("X-Message", "Missing cluster", RD), Ctx}
+        end
     end.
 
 -spec to_json(wrq:reqdata(), term()) -> {iodata(), wrq:reqdata(), term()}.
@@ -41,7 +46,7 @@ to_json(RD, Ctx) ->
     Cluster = proplists:get_value(cluster, PathInfo),
     Metric = proplists:get_value(metric, PathInfo),
     case Metric of
-	"min" ->
+        "min" ->
             {json_body([repl_delay_core_server:get_min_replication_delay(Cluster)]), RD, Ctx};
         "max" ->
             {json_body([repl_delay_core_server:get_max_replication_delay(Cluster)]), RD, Ctx};
@@ -56,11 +61,11 @@ to_html(RD, Ctx) ->
     Metric = proplists:get_value(metric, PathInfo),
     case Metric of
         "min" ->
-	    {min, Val} = repl_delay_core_server:get_min_replication_delay(Cluster),
-	    {float_to_list(float(Val), [{decimals, 4}, compact]) ++ "\n", RD, Ctx};
+            {min, Val} = repl_delay_core_server:get_min_replication_delay(Cluster),
+            {float_to_list(float(Val), [{decimals, 4}, compact]) ++ "\n", RD, Ctx};
         "max" ->
-	    {max, Val} = repl_delay_core_server:get_max_replication_delay(Cluster),
-	    {float_to_list(float(Val), [{decimals, 4}, compact]) ++ "\n", RD, Ctx};
+            {max, Val} = repl_delay_core_server:get_max_replication_delay(Cluster),
+            {float_to_list(float(Val), [{decimals, 4}, compact]) ++ "\n", RD, Ctx};
         undefined ->
             {json_body(repl_delay_core_server:get_replication_delays(Cluster)), RD, Ctx}
     end.
