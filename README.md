@@ -140,6 +140,9 @@ the info.
 ### Todo
 
 * Makes more sense to return the name of the least delayed slave in /min.
-* Finish mysql support.
-*
+* Finish mysql support (abuse minimez, grant privs to _ro role to access heartbeat table).
+* Redo ets use to not be retarded.
+** Index by cluster.
+** use ets:match to find machines in a cluster, fold over these.
 * Rewrite in elixir to try it because it looks awesome.
+* Add endpoint to list available clusters.
