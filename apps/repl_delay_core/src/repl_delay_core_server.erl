@@ -47,7 +47,7 @@ exists(Cluster) ->
 %% ------------------------------------------------------------------
 
 init(Args) ->
-    init_tables(),
+    ets:new(watched_clusters, [set, public, named_table]),
     watch_slave_clusters(repl_delay_core_config:slave_clusters()),
     {ok, Args}.
 
@@ -127,22 +127,7 @@ watch_slave_clusters([{cluster, Properties}|T]) ->
     Type = proplists:get_value(type, Properties),
     Settings = proplists:get_value(settings, Properties),
     Slaves = proplists:get_value(slaves, Properties),
-    Ets = list_to_atom("slaves." ++ Cluster),
-    ets:new(Ets, [set, public, named_table]),
     watch_slave_cluster(Type, Cluster, Settings, Slaves),
     watch_slave_clusters(T);
 watch_slave_clusters([]) ->
     ok.
-
-init_tables() ->
-    Nodes = [node()],
-    ok = mnesia:start(),
-    mnesia:create_schema(Nodes),
-    mnesia:delete_table(slaves),
-    {atomic, ok} = mnesia:create_table(slaves,
-				       [
-					{attributes, record_info(fields, slave_record)},
-					% name is the first field, thus always indexed.
-					{index, [#slave_record.name]},
-					{ram_copies, Nodes}
-				       ]).
