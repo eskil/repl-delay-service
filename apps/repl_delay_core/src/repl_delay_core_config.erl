@@ -12,25 +12,15 @@ slave_clusters() ->
        {type, postgres},
        {settings,
 	[
-	 {user, "uber"},
-	 {password, "uber"},
-	 {database, "uber"}
+	 {user, "user"},
+	 {password, "password"},
+	 {database, "database"}
 	]
        },
        {slaves,
 	[
-	 [{host, "postgres01-sjc1"}, {port, 6432}],
-	 [{host, "postgres03-sjc1"}, {port, 6432}],
-	 [{host, "postgres04-sjc1"}, {port, 6432}],
-	 [{host, "postgres05-sjc1"}, {port, 6432}],
-	 [{host, "postgres06-sjc1"}, {port, 6432}],
-	 [{host, "postgres08-sjc1"}, {port, 6432}],
-	 [{host, "postgres14-peak1"}, {port, 6432}],
-	 [{host, "postgres15-peak1"}, {port, 6432}],
-	 [{host, "postgres19-peak1"}, {port, 6432}],
-	 [{host, "postgres20-peak1"}, {port, 6432}],
-	 [{host, "postgres02-sjc1"}, {port, 6432}],
-	 [{host, "postgres21-peak1"}, {port, 6432}]
+	 [{host, "postgres02"}, {port, 6432}],
+	 [{host, "postgres03"}, {port, 6432}],
 	]
        }
       ]
